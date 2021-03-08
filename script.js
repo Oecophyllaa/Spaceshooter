@@ -5,6 +5,7 @@ let gameloop
 let pSize = 20
 let pX
 let pY
+let pLives = 3
 
 let arahKapal = ""
 
@@ -21,11 +22,7 @@ let eY = 0
 let laser = []
 let alien = []
 
-let kill = 0
-
-let bossX
-let bossY = 40
-let bossHp
+let score = 0
 
 window.onload = function () {
     canvas = document.getElementById('canvas')
@@ -49,21 +46,18 @@ window.onload = function () {
     ufo = new Image()
     ufo.src = './assets/ufo.png'
 
-    monster = new Image()
-    monster.src = './assets/monster.png'
-
     // loop
     gameloop = setInterval(draw, 180);
 
-    jalan()
+    terbang()
 }
 
 function draw() {
     angkasa()
     tembak()
     musuh()
-    spawnBoss()
     kapal()
+    stats()
 }
 
 function angkasa() {
@@ -85,9 +79,8 @@ function kapal() {
     }
 }
 
-function jalan() {
+function terbang() {
     document.addEventListener('keydown', function (e) {
-        // jalan
         if (e.key === "ArrowLeft") {
             arahKapal = "L"
             if (pX < 0) {
@@ -110,6 +103,7 @@ function jalan() {
             duar.play()
         }
     })
+
     document.addEventListener('keyup', function (e) {
         if (e.key === "ArrowLeft") {
             arahKapal = ""
@@ -125,51 +119,15 @@ function tembak() {
         // console.log(e['x'], eX, e['y'], eY);
         if (e['x'] == eX && e['y'] <= eY) {
             // console.log(kill);
-            if (kill == 0) {
+            if (score) {
                 let hit = new Audio()
-                hit.src = './assets/announcer/1kill.mp3'
-                hit.play()
-            } else if (kill == 1) {
-                let hit = new Audio()
-                hit.src = './assets/announcer/2kill.mp3'
-                hit.play()
-            } else if (kill == 2) {
-                let hit = new Audio()
-                hit.src = './assets/announcer/3kill.mp3'
-                hit.play()
-            } else if (kill == 3) {
-                let hit = new Audio()
-                hit.src = './assets/announcer/4kill.mp3'
-                hit.play()
-            } else if (kill == 4) {
-                let hit = new Audio()
-                hit.src = './assets/announcer/5kill.mp3'
-                hit.play()
-            } else if (kill >= 5) {
-                let hit = new Audio()
-                hit.src = './assets/announcer/godlike.mp3'
+                hit.src = './assets/bomb.mp3'
                 hit.play()
             }
             eY = 0
             eX = Math.round(Math.random() * pSize) * pSize
 
-            kill++
-
-            if (kill == 3) {
-                kill = 3
-
-                bossHp = 5
-            }
-
-
-            // console.log(kill);
-        }
-        if (e['x'] == bossX && e['y'] <= bossY) {
-            console.log(e['x'], bossX, e['y'], bossY);
-
-            let gg = new Audio()
-            gg.src = './assets/announcer/holyshyt.mp3'
-            gg.play()
+            score++
         }
 
         e['y'] -= pSize
@@ -192,24 +150,32 @@ function musuh() {
 
     // console.log(eX, eY, pX, pY);
     if (eX == pX && eY == canvas.height - pSize) {
-        clearInterval(gameloop)
-        if (confirm('Pesawat Crash, Ulangi?')) {
-            window.location.reload()
-        } else {
-            alert('silahkan refresh web untuk memulai permainan')
+        pLives--
+        if (pLives === 0) {
+            clearInterval(gameloop)
+            $cek = confirm("Pesawat Hancur, Ulangi ?")
+            if ($cek === true) {
+                window.location.reload()
+            } else {
+                alert("Silahkan refresh browser (F5) untuk bermain lagi!")
+            }
         }
-
     }
 }
 
-function spawnBoss() {
-    if (kill == 3) {
+function stats() {
+    context.fillStyle = 'white';
+    context.font = '15px sans-serif';
+    context.fillText(`Lives : ${pLives}`, 20, 40);
+    context.fillText(`Score : ${score}`, 20, 70);
 
-        // bossX -= pSize
-        if (bossX < 0) {
-
+    if (score === 20) {
+        clearInterval(gameloop)
+        $cek = confirm("Kamu Memenangkan Permainan!!, bermain lagi?")
+        if ($cek === true) {
+            window.location.reload()
+        } else {
+            alert("Terima Kasih Telah Bermain!, tekan (F5) untuk bermain kembali")
         }
-        context.drawImage(monster, bossX - pSize, bossY, pSize * 2, pSize * 2);
-
     }
 }

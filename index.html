@@ -7,8 +7,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style>
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            margin-top: 3rem;
+        }
+
         canvas {
             border: 1px solid black;
+        }
+
+        p {
+            font-family: Arial, Helvetica, sans-serif;
         }
     </style>
 
@@ -18,7 +30,14 @@
 </head>
 
 <body>
-    <canvas id="canvas" width="400" height="400"></canvas>
+    <div class="container">
+        <canvas id="canvas" width="400" height="400"></canvas>
+        <div>
+            <p>Gunakan "ArrowLeft / ArrowRight" untuk bergerak</p>
+            <p>Tombol "Space" untuk menembak musuh </p>
+            <p>Gapai score 20 untuk Memenangkan Game!!</p>
+        </div>
+    </div>
 </body>
 
 </html>
